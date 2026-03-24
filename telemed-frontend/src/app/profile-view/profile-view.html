@@ -1,0 +1,120 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Мой профиль</h4>
+      <div>
+        <button class="btn btn-outline-primary me-2" routerLink="/profile-update">
+          ✏️ Редактировать
+        </button>
+        <button class="btn btn-outline-secondary" [routerLink]="'/' + role + '-dashboard'">
+          Назад
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Загрузка -->
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <p class="mt-2">Загрузка профиля...</p>
+      </div>
+
+      <!-- Ошибка -->
+      <div *ngIf="error && !loading" class="alert alert-danger">
+        {{ error }}
+      </div>
+
+      <!-- Профиль пациента -->
+      <div *ngIf="!loading && role === 'patient' && patientData">
+        <div class="row">
+          <div class="col-md-6">
+            <table class="table table-bordered">
+              <tr>
+                <th style="width: 40%">Логин</th>
+                <td>{{ patientData.username }}</td>
+              </tr>
+              <tr>
+                <th>ФИО</th>
+                <td>{{ patientData.name || 'Не указано' }}</td>
+              </tr>
+              <tr>
+                <th>Дата рождения</th>
+                <td>{{ formatDate(patientData.birth_date) }}</td>
+              </tr>
+              <tr>
+                <th>Пол</th>
+                <td>{{ getSexText(patientData.sex) }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Медицинская карта -->
+        <div class="card mt-4" *ngIf="patientData.medical_card">
+          <div class="card-header">
+            <h5>Медицинская карта</h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-bordered">
+              <tr>
+                <th style="width: 40%">Рост (см)</th>
+                <td>{{ patientData.medical_card.height || 'Не указано' }}</td>
+              </tr>
+              <tr>
+                <th>Вес (кг)</th>
+                <td>{{ patientData.medical_card.weight || 'Не указано' }}</td>
+              </tr>
+              <tr>
+                <th>Группа крови</th>
+                <td>{{ patientData.medical_card.blood_type || 'Не указано' }}</td>
+              </tr>
+              <tr>
+                <th>Резус-фактор</th>
+                <td>{{ patientData.medical_card.rh_factor ? 'Положительный' : 'Отрицательный' }}</td>
+              </tr>
+              <tr>
+                <th>Хронические заболевания</th>
+                <td>{{ patientData.medical_card.chronic_diseases || 'Нет' }}</td>
+              </tr>
+              <tr>
+                <th>Аллергии</th>
+                <td>{{ patientData.medical_card.allergies || 'Нет' }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Профиль врача -->
+      <div *ngIf="!loading && role === 'medic' && medicData">
+        <div class="row">
+          <div class="col-md-6">
+            <table class="table table-bordered">
+              <tr>
+                <th style="width: 40%">Логин</th>
+                <td>{{ medicData.username }}</td>
+              </tr>
+              <tr>
+                <th>ФИО</th>
+                <td>{{ medicData.name || 'Не указано' }}</td>
+              </tr>
+              <tr>
+                <th>Специальность</th>
+                <td>{{ medicData.specialty || 'Не указано' }}</td>
+              </tr>
+              <tr>
+                <th>Образование</th>
+                <td>{{ medicData.education || 'Не указано' }}</td>
+              </tr>
+              <tr>
+                <th>Место работы</th>
+                <td>{{ medicData.work_place || 'Не указано' }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

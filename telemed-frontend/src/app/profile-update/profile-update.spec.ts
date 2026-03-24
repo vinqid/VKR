@@ -1,0 +1,22 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ProfileUpdate } from './profile-update';
+
+describe('ProfileUpdate', () => {
+  let component: ProfileUpdate;
+  let fixture: ComponentFixture<ProfileUpdate>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ProfileUpdate],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ProfileUpdate);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

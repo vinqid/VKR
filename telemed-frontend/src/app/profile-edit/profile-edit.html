@@ -1,0 +1,68 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3>Заполнение профиля</h3>
+          <button class="btn btn-outline-danger" (click)="logout()">
+            Выйти
+          </button>
+        </div>
+        <div class="card-body">
+          <p class="text-muted">Это необходимо для работы в системе</p>
+          
+          <div *ngIf="success" class="alert alert-success">
+            Профиль сохранён! Перенаправление в кабинет...
+          </div>
+
+          <form *ngIf="!success" (ngSubmit)="onSubmit()" #profileForm="ngForm">
+            <!-- Для пациента -->
+            <ng-container *ngIf="role === 'patient'">
+              <div class="mb-3">
+                <label class="form-label">ФИО *</label>
+                <input type="text" class="form-control" [(ngModel)]="patientData.name" name="name" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Дата рождения</label>
+                <input type="date" class="form-control" [(ngModel)]="patientData.birth_date" name="birth_date">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Пол</label>
+                <select class="form-control" [(ngModel)]="patientData.sex" name="sex">
+                  <option value="M">Мужской</option>
+                  <option value="F">Женский</option>
+                </select>
+              </div>
+            </ng-container>
+
+            <!-- Для врача -->
+            <ng-container *ngIf="role === 'medic'">
+              <div class="mb-3">
+                <label class="form-label">ФИО *</label>
+                <input type="text" class="form-control" [(ngModel)]="medicData.name" name="name" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Специальность</label>
+                <input type="text" class="form-control" [(ngModel)]="medicData.specialty" name="specialty">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Образование</label>
+                <input type="text" class="form-control" [(ngModel)]="medicData.education" name="education">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Место работы</label>
+                <input type="text" class="form-control" [(ngModel)]="medicData.work_place" name="work_place">
+              </div>
+            </ng-container>
+
+            <button type="submit" class="btn btn-primary w-100" [disabled]="profileForm.invalid || loading">
+              {{ loading ? 'Сохранение...' : 'Сохранить и продолжить' }}
+            </button>
+
+            <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

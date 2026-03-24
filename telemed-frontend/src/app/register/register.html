@@ -1,0 +1,105 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3>Регистрация</h3>
+        </div>
+        <div class="card-body">
+          <div *ngIf="success" class="alert alert-success">
+            Регистрация успешна! Перенаправляем на вход...
+          </div>
+
+          <form *ngIf="!success" (ngSubmit)="onSubmit()" #registerForm="ngForm">
+            <div class="mb-3">
+              <label for="username" class="form-label">Логин *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="username"
+                name="username"
+                [(ngModel)]="userData.username"
+                required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="password" class="form-label">Пароль *</label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="password"
+                name="password"
+                [(ngModel)]="userData.password"
+                required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                id="email"
+                name="email"
+                [(ngModel)]="userData.email">
+            </div>
+
+            <div class="mb-3">
+              <label for="birth_date" class="form-label">Дата рождения</label>
+              <input 
+                type="date" 
+                class="form-control" 
+                id="birth_date"
+                name="birth_date"
+                [(ngModel)]="userData.birth_date">
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Роль</label>
+              <div>
+                <div class="form-check form-check-inline">
+                  <input 
+                    type="radio" 
+                    class="form-check-input" 
+                    id="rolePatient"
+                    name="role"
+                    value="patient"
+                    [(ngModel)]="userData.role">
+                  <label for="rolePatient" class="form-check-label">Пациент</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input 
+                    type="radio" 
+                    class="form-check-input" 
+                    id="roleMedic"
+                    name="role"
+                    value="medic"
+                    [(ngModel)]="userData.role">
+                  <label for="roleMedic" class="form-check-label">Врач</label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-success" 
+                [disabled]="registerForm.invalid || loading">
+                {{ loading ? 'Регистрация...' : 'Зарегистрироваться' }}
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-link" 
+                routerLink="/login">
+                Уже есть аккаунт? Войти
+              </button>
+            </div>
+            
+            <div *ngIf="error" class="alert alert-danger mt-3">
+              {{ error }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

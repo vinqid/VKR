@@ -1,0 +1,59 @@
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3>Кабинет врача</h3>
+      <button class="btn btn-outline-danger" (click)="logout()">
+        Выйти
+      </button>
+    </div>
+    <div class="card-body">
+      <p>Добро пожаловать, {{ medicName }}!</p>
+      
+      <!-- Выпадающий список пациентов -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <label class="form-label">Выберите пациента:</label>
+          <div class="d-flex gap-2">
+            <select 
+              class="form-select" 
+              [(ngModel)]="selectedPatientId">
+              <option [value]="null">-- Выберите пациента --</option>
+              <option *ngFor="let patient of patients" [value]="patient.id">
+                {{ patient.name }} ({{ patient.birth_date | date:'dd.MM.yyyy' }})
+              </option>
+            </select>
+            <button 
+              class="btn btn-primary" 
+              [disabled]="!selectedPatientId"
+              (click)="createQuestionnaireForSelected()">
+              Создать анкету
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопки -->
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary position-relative" routerLink="/medic-patients">
+          Мои пациенты
+        </button>
+        <button class="btn btn-success position-relative" routerLink="/medic-questionnaires">
+          Входящие анкеты
+          <span *ngIf="newResponsesCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ newResponsesCount }}
+            <span class="visually-hidden">новых ответов</span>
+          </span>
+        </button>
+        <button class="btn btn-info" routerLink="/doctor-stats">
+          📊 Статистика
+        </button>
+        <button class="btn btn-warning" routerLink="/manage-parameters">
+          ⚙️ Параметры
+        </button>
+        <button class="btn btn-info" routerLink="/profile">
+          👤 Мой профиль
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

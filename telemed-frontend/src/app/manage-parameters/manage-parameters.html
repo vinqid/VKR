@@ -1,0 +1,111 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Управление параметрами анкет</h4>
+      <button class="btn btn-outline-secondary" routerLink="/medic-dashboard">
+        Назад
+      </button>
+    </div>
+    <div class="card-body">
+      <!-- Кнопка создания нового параметра -->
+      <div class="mb-4">
+        <button class="btn btn-primary" (click)="toggleCreateForm()">
+          {{ showCreateForm ? 'Отмена' : '+ Новый параметр' }}
+        </button>
+      </div>
+
+      <!-- Форма создания нового параметра -->
+      <div *ngIf="showCreateForm" class="card mb-4 bg-light">
+        <div class="card-body">
+          <h5>Новый параметр</h5>
+          <div class="mb-3">
+            <label class="form-label">Название *</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="newParameter.name"
+              placeholder="Например: Давление">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Описание</label>
+            <textarea 
+              class="form-control" 
+              rows="2"
+              [(ngModel)]="newParameter.description"
+              placeholder="Опишите, что измеряет параметр"></textarea>
+          </div>
+          <button class="btn btn-success" (click)="createParameter()" [disabled]="loading">
+            Сохранить
+          </button>
+        </div>
+      </div>
+
+      <!-- Сообщения -->
+      <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <!-- Загрузка -->
+      <div *ngIf="loading && !parameters.length" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <p class="mt-2">Загрузка параметров...</p>
+      </div>
+
+      <!-- Список параметров -->
+      <div *ngIf="!loading || parameters.length > 0">
+        <div *ngIf="parameters.length === 0" class="alert alert-info">
+          Параметры не созданы. Нажмите "+ Новый параметр" чтобы добавить.
+        </div>
+
+        <div class="list-group">
+          <div *ngFor="let param of parameters" class="list-group-item">
+            <!-- Режим редактирования -->
+            <div *ngIf="editingParameter?.id === param.id; else viewMode">
+              <div class="mb-2">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  [(ngModel)]="editName"
+                  placeholder="Название">
+              </div>
+              <div class="mb-2">
+                <textarea 
+                  class="form-control" 
+                  rows="2"
+                  [(ngModel)]="editDescription"
+                  placeholder="Описание"></textarea>
+              </div>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-success" (click)="updateParameter()" [disabled]="loading">
+                  Сохранить
+                </button>
+                <button class="btn btn-sm btn-secondary" (click)="cancelEdit()">
+                  Отмена
+                </button>
+              </div>
+            </div>
+
+            <!-- Режим просмотра -->
+            <ng-template #viewMode>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-1">{{ param.name }}</h6>
+                  <p class="mb-1 text-muted">{{ param.description || 'Нет описания' }}</p>
+                </div>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-primary" (click)="startEdit(param)">
+                    ✏️
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteParameter(param.id)">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

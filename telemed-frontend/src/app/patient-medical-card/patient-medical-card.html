@@ -1,0 +1,119 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Медицинская карта: {{ patientName }}</h4>
+      <div>
+        <button *ngIf="!editing" class="btn btn-outline-primary me-2" (click)="toggleEdit()">
+          ✏️ Редактировать
+        </button>
+        <button *ngIf="editing" class="btn btn-outline-secondary me-2" (click)="toggleEdit()">
+          Отмена
+        </button>
+        <button class="btn btn-outline-secondary" routerLink="/medic-patients">
+          Назад к пациентам
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Загрузка -->
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <p class="mt-2">Загрузка медицинской карты...</p>
+      </div>
+
+      <!-- Сообщения -->
+      <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <!-- Просмотр данных -->
+      <div *ngIf="!loading && medicalCard && !editing">
+        <div class="row">
+          <div class="col-md-6">
+            <table class="table table-bordered">
+              <tr>
+                <th style="width: 40%">Рост (см)</th>
+                <td>{{ medicalCard.height || 'Не указано' }}</td>
+              </tr>
+               <tr>
+                <th>Вес (кг)</th>
+                <td>{{ medicalCard.weight || 'Не указано' }}</td>
+               </tr>
+               <tr>
+                <th>Группа крови</th>
+                <td>{{ medicalCard.blood_type || 'Не указано' }}</td>
+               </tr>
+               <tr>
+                <th>Резус-фактор</th>
+                <td>{{ getRhText(medicalCard.rh_factor) }}</td>
+               </tr>
+               <tr>
+                <th>Хронические заболевания</th>
+                <td>{{ medicalCard.chronic_diseases || 'Нет' }}</td>
+               </tr>
+               <tr>
+                <th>Аллергии</th>
+                <td>{{ medicalCard.allergies || 'Нет' }}</td>
+               </tr>
+             </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Режим редактирования -->
+      <div *ngIf="!loading && medicalCard && editing">
+        <form (ngSubmit)="saveMedicalCard()" #cardForm="ngForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Рост (см)</label>
+                <input type="number" class="form-control" [(ngModel)]="editData.height" name="height">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Вес (кг)</label>
+                <input type="number" class="form-control" [(ngModel)]="editData.weight" name="weight">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Группа крови</label>
+                <select class="form-control" [(ngModel)]="editData.blood_type" name="blood_type">
+                  <option value="">Не указано</option>
+                  <option *ngFor="let type of bloodTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Резус-фактор</label>
+                <select class="form-control" [(ngModel)]="editData.rh_factor" name="rh_factor">
+                  <option [value]="true">Положительный</option>
+                  <option [value]="false">Отрицательный</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Хронические заболевания</label>
+                <textarea class="form-control" rows="3" [(ngModel)]="editData.chronic_diseases" name="chronic_diseases" 
+                  placeholder="Перечислите хронические заболевания"></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Аллергии</label>
+                <textarea class="form-control" rows="3" [(ngModel)]="editData.allergies" name="allergies"
+                  placeholder="Перечислите аллергены"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              {{ loading ? 'Сохранение...' : 'Сохранить' }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="toggleEdit()">
+              Отмена
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div *ngIf="!loading && !medicalCard" class="alert alert-info">
+        Медицинская карта не найдена
+      </div>
+    </div>
+  </div>
+</div>

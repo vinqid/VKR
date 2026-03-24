@@ -1,0 +1,82 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Поиск врача</h4>
+      <button class="btn btn-outline-secondary" routerLink="/patient-dashboard">
+        Назад
+      </button>
+    </div>
+    <div class="card-body">
+      <!-- Поиск -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="input-group">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Поиск по ФИО или специальности..."
+              [(ngModel)]="searchTerm"
+              (input)="filterDoctors()">
+            <span class="input-group-text">🔍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Загрузка -->
+      <div *ngIf="loading && doctors.length === 0" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <p class="mt-2">Загрузка списка врачей...</p>
+      </div>
+
+      <!-- Сообщения -->
+      <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <!-- Список врачей -->
+      <div *ngIf="!loading || doctors.length > 0">
+        <div *ngIf="filteredDoctors.length === 0" class="alert alert-info">
+          Врачи не найдены
+        </div>
+
+        <div class="row">
+          <div *ngFor="let doctor of filteredDoctors" class="col-md-6 mb-3">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <h5 class="card-title">{{ doctor.name }}</h5>
+                  <!-- Индикатор прикрепления -->
+                  <span *ngIf="isDoctorAttached(doctor.id)" class="badge bg-success">
+                    Прикреплён
+                  </span>
+                </div>
+                <p class="card-text">
+                  <strong>Специальность:</strong> {{ doctor.specialty }}<br>
+                  <strong>Образование:</strong> {{ doctor.education }}<br>
+                  <strong>Место работы:</strong> {{ doctor.work_place }}
+                </p>
+                
+                <!-- Умная кнопка -->
+                <button 
+                  *ngIf="!isDoctorAttached(doctor.id)"
+                  class="btn btn-primary" 
+                  (click)="attachDoctor(doctor.id)"
+                  [disabled]="loading">
+                  {{ loading ? 'Прикрепление...' : 'Прикрепиться' }}
+                </button>
+                
+                <button 
+                  *ngIf="isDoctorAttached(doctor.id)"
+                  class="btn btn-success" 
+                  disabled>
+                  ✓ Прикреплён
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

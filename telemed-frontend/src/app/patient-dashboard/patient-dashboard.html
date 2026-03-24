@@ -1,0 +1,31 @@
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3>Кабинет пациента</h3>
+      <button class="btn btn-outline-danger" (click)="logout()">
+        Выйти
+      </button>
+    </div>
+    <div class="card-body">
+      <p>Добро пожаловать, {{ patientName }}!</p>
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary position-relative" routerLink="/patient-questionnaires">
+          Мои анкеты
+          <span *ngIf="newQuestionnairesCount > 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ newQuestionnairesCount }}
+            <span class="visually-hidden">новых анкет</span>
+          </span>
+        </button>
+        <button class="btn btn-success" routerLink="/find-doctor">
+          Найти врача
+        </button>
+        <button class="btn btn-info" routerLink="/patient-stats">
+          📊 Моя динамика
+        </button>
+        <button class="btn btn-info" routerLink="/profile">
+  👤 Мой профиль
+</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Мои пациенты</h4>
+      <button class="btn btn-outline-secondary" routerLink="/medic-dashboard">
+        Назад
+      </button>
+    </div>
+    <div class="card-body">
+      <!-- Форма добавления пациента (всегда видна) -->
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <div class="input-group">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Введите логин пациента"
+              [(ngModel)]="newPatientUsername">
+            <button 
+              class="btn btn-success" 
+              (click)="addPatient()"
+              [disabled]="loading">
+              {{ loading ? 'Добавление...' : 'Добавить пациента' }}
+            </button>
+          </div>
+          <small class="text-muted">Пациент должен быть зарегистрирован в системе</small>
+        </div>
+      </div>
+
+      <!-- Сообщения -->
+      <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <!-- Список пациентов -->
+      <div *ngIf="!loading; else loadingTemplate">
+        <div *ngIf="patients.length === 0" class="alert alert-info">
+          У вас пока нет пациентов. Добавьте первого пациента по логину.
+        </div>
+
+        <div class="list-group">
+          <div *ngFor="let patient of patients" class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ patient.name || 'Имя не указано' }}</strong>
+              <br>
+              <small class="text-muted">
+                Логин: {{ patient.username }} | 
+                Дата рождения: {{ patient.birth_date | date:'dd.MM.yyyy' }}
+              </small>
+            </div>
+            <div>
+              <button 
+                class="btn btn-sm btn-outline-primary me-2"
+                [routerLink]="['/create-questionnaire']" 
+                [queryParams]="{patientId: patient.id}">
+                Создать анкету
+              </button>
+              <button 
+                class="btn btn-sm btn-outline-danger"
+                (click)="removePatient(patient.id)">
+                Удалить
+              </button>
+              <button 
+                class="btn btn-sm btn-info me-2"
+                [routerLink]="['/patient-medical-card', patient.id]">
+                📋 Медкарта
+              </button> 
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Шаблон загрузки -->
+      <ng-template #loadingTemplate>
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+          </div>
+          <p class="mt-2">Загрузка списка пациентов...</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

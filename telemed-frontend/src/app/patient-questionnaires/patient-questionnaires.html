@@ -1,0 +1,69 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Мои анкеты</h4>
+      <button class="btn btn-outline-secondary" routerLink="/patient-dashboard">
+        Назад
+      </button>
+    </div>
+    <div class="card-body">
+      <!-- Загрузка -->
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <p class="mt-2">Загрузка анкет...</p>
+      </div>
+
+      <!-- Сообщение об ошибке -->
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+      <!-- Список анкет (показываем, когда не грузится) -->
+      <div *ngIf="!loading">
+        <div *ngIf="questionnaires.length === 0" class="alert alert-info">
+          У вас пока нет анкет
+        </div>
+
+        <div class="list-group">
+          <div *ngFor="let q of questionnaires" class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6>Анкета от {{ q.date | date:'dd.MM.yyyy' }}</h6>
+                <p class="mb-1">Врач: {{ q.medic_name }}</p>
+                <p class="mb-1">Параметры: 
+                  <span *ngFor="let p of q.parameters; let last = last">
+                    {{ p.name }}{{ !last ? ', ' : '' }}
+                  </span>
+                </p>
+              </div>
+              <div class="text-end">
+                <span class="badge bg-{{ getStatusClass(q.status) }} mb-2">
+                  {{ getStatusText(q.status) }}
+                </span>
+                <br>
+                <button 
+                  *ngIf="q.status === 'sent_to_patient'" 
+                  class="btn btn-sm btn-primary"
+                  [routerLink]="['/fill-questionnaire', q.id]">
+                  Заполнить
+                </button>
+                <button 
+                  *ngIf="q.status === 'denied'" 
+                  class="btn btn-sm btn-warning"
+                  [routerLink]="['/fill-questionnaire', q.id]">
+                  Заполнить заново
+                </button>
+                <button 
+                  *ngIf="q.status === 'answered'" 
+                  class="btn btn-sm btn-outline-secondary"
+                  [routerLink]="['/questionnaire-detail', q.id]">
+                  Просмотр
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

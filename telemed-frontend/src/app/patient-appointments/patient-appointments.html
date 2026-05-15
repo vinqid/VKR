@@ -1,0 +1,141 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>📋 Мои приёмы</h4>
+      <button class="btn btn-outline-secondary" routerLink="/patient-dashboard">
+        ← Назад
+      </button>
+    </div>
+    <div class="card-body">
+      
+      <!-- Фильтры -->
+      <div class="row mb-4 p-3 bg-light rounded">
+        <div class="col-md-3 mb-2">
+          <label class="form-label fw-bold">📅 По дате</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            [(ngModel)]="filterDate"
+            (change)="applyFilters()"
+            placeholder="Выберите дату">
+        </div>
+        
+        <div class="col-md-3 mb-2">
+          <label class="form-label fw-bold">👨‍⚕️ По врачу</label>
+          <select 
+            class="form-select" 
+            [(ngModel)]="filterDoctor"
+            (change)="applyFilters()">
+            <option value="">Все врачи</option>
+            <option *ngFor="let doctor of uniqueDoctors" [value]="doctor">
+              {{ doctor }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="col-md-3 mb-2">
+          <label class="form-label fw-bold">🩺 По диагнозу</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="filterDiagnosis"
+            (input)="applyFilters()"
+            placeholder="Введите диагноз">
+        </div>
+        
+        <div class="col-md-3 mb-2 d-flex align-items-end">
+          <button class="btn btn-secondary w-100" (click)="resetFilters()">
+            🔄 Сбросить фильтры
+          </button>
+        </div>
+      </div>
+
+      <!-- Состояние загрузки -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <p class="mt-3">Загрузка ваших приёмов...</p>
+      </div>
+
+      <!-- Ошибка -->
+      <div *ngIf="error && !loading" class="alert alert-danger">
+        {{ error }}
+      </div>
+
+      <!-- Нет записей -->
+      <div *ngIf="!loading && !error && filteredAppointments.length === 0" class="alert alert-info text-center py-4">
+        <i class="bi bi-calendar-heart fs-1"></i>
+        <p class="mt-2">У вас пока нет записей о приёмах.</p>
+        <small>Записи появляются после визита к врачу</small>
+      </div>
+
+      <!-- Список приёмов -->
+      <div *ngIf="!loading && !error && filteredAppointments.length > 0" class="row">
+        <div *ngFor="let app of filteredAppointments" class="col-md-6 mb-3">
+          <div class="card h-100 shadow-sm hover-shadow">
+            <div class="card-header bg-white">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                  <i class="bi bi-calendar-check"></i> 
+                  {{ formatDateTime(app.date).split(',')[0] }}
+                </h5>
+                <small class="text-muted">{{ formatDateTime(app.date).split(',')[1] }}</small>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="mb-2">
+                <strong>👨‍⚕️ Врач:</strong> {{ app.medic_name || 'Не указан' }}
+              </div>
+              <div class="mb-2">
+                <strong>🩺 Диагноз:</strong>
+                <span class="badge bg-info ms-2">{{ app.diagnosis || 'Не указан' }}</span>
+              </div>
+              <div class="mb-2">
+                <strong>💊 Жалобы:</strong>
+                <p class="mb-0 text-muted small">{{ app.symptoms || '—' }}</p>
+              </div>
+              <div class="mb-2">
+                <strong>📝 Лечение:</strong>
+                <p class="mb-0 text-muted small">{{ app.treatment || '—' }}</p>
+              </div>
+              <div *ngIf="app.tests" class="mb-2">
+                <strong>🔬 Назначенные анализы:</strong>
+                <p class="mb-0 text-muted small">{{ app.tests }}</p>
+              </div>
+              <div *ngIf="app.recommendations" class="mb-2">
+                <strong>✨ Рекомендации:</strong>
+                <p class="mb-0 text-muted small">{{ app.recommendations }}</p>
+              </div>
+            </div>
+            <div class="card-footer bg-white">
+              <button 
+                class="btn btn-sm btn-outline-primary w-100"
+                [routerLink]="['/appointment-detail', app.id]">
+                Подробнее →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Сводка по приёмам -->
+      <div *ngIf="!loading && !error && filteredAppointments.length > 0" class="mt-4 p-3 bg-light rounded">
+        <div class="row text-center">
+          <div class="col-md-4">
+            <h5>📊 Всего приёмов</h5>
+            <p class="display-6">{{ filteredAppointments.length }}</p>
+          </div>
+          <div class="col-md-4">
+            <h5>👨‍⚕️ Врачей</h5>
+            <p class="display-6">{{ uniqueDoctors.length }}</p>
+          </div>
+          <div class="col-md-4">
+            <h5>📅 Последний приём</h5>
+            <p class="lead">{{ (filteredAppointments[0]?.date | date:'dd.MM.yyyy') || '—' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -49,6 +49,28 @@ updateMedicalCard(patientId: number, data: any): Observable<any> {
   return this.http.put(`/api/medic/patient/${patientId}/medical-card/update/`, data);
 }
 
+// Приёмы
+getMedicAppointments(): Observable<any> {
+  return this.http.get('/api/medic/appointments/');
+}
+
+getMedicPatientAppointments(patientId: number): Observable<any> {
+  return this.http.get(`/api/medic/patient/${patientId}/appointments/`);
+}
+
+getPatientAppointments(): Observable<any> {
+  return this.http.get('/api/patient/appointments/');
+}
+
+getAppointmentDetail(id: number): Observable<any> {
+  return this.http.get(`/api/appointments/${id}/`);
+}
+retakeQuestionnaire(id: number): Observable<any> {
+  return this.http.post(`/api/questionnaires/${id}/retake/`, {});
+}
+createAppointment(data: any): Observable<any> {
+  return this.http.post('/api/appointments/create/', data);
+}
   // Обновление профиля врача
   updateMedicProfile(data: any): Observable<any> {
     return this.http.put('/api/medic/profile/update/', data);

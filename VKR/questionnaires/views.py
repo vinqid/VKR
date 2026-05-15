@@ -87,6 +87,10 @@ class FillQuestionnaireView(APIView):
     def post(self, request, pk):
         questionnaire = get_object_or_404(Questionnaire, pk=pk)
 
+        print("=== DEBUG ===")
+        print("Request data:", request.data)
+        print("Responses:", request.data.get('responses', []))
+
         # Проверяем, что это пациент и анкета его
         if request.user.role != 'patient':
             return Response(
@@ -111,14 +115,21 @@ class FillQuestionnaireView(APIView):
         # Сохраняем комментарий пациента
         questionnaire.optional = request.data.get('optional', '')
 
-        # Сохраняем ответы
+        # Сохраняем ответы (с обработкой ошибок)
         responses_data = request.data.get('responses', [])
         for resp_data in responses_data:
-            PatientResponse.objects.create(
-                response=resp_data.get('response'),
-                questionnaire=questionnaire,
-                parameter_id=resp_data.get('parameter_id')
-            )
+            try:
+                PatientResponse.objects.create(
+                    response=resp_data.get('response'),
+                    questionnaire=questionnaire,
+                    parameter_id=resp_data.get('parameter_id')
+                )
+            except Exception as e:
+                print(f"Ошибка при сохранении ответа: {e}")
+                return Response(
+                    {"error": f"Ошибка сохранения: {str(e)}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
         questionnaire.status = 'sent_to_medic'
         questionnaire.save()
@@ -242,3 +253,23 @@ class MedicProfileStatusView(APIView):
         medic = request.user.medic_profile
         is_filled = bool(medic.name and medic.name.strip())
         return Response({'filled': is_filled})
+
+
+class RetakeQuestionnaireView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        questionnaire = get_object_or_404(Questionnaire, pk=pk)
+
+        if request.user.role != 'patient':
+            return Response({"error": "Только пациент"}, status=403)
+
+        if questionnaire.status != 'denied':
+            return Response({"error": "Анкета не отклонена"}, status=400)
+
+        questionnaire.patient_responses.all().delete()
+        questionnaire.optional = ''
+        questionnaire.status = 'sent_to_patient'
+        questionnaire.save()
+
+        return Response({"message": "Анкета готова к заполнению"})

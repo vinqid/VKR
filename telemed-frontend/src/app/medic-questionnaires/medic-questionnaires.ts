@@ -92,10 +92,18 @@ export class MedicQuestionnairesComponent implements OnInit {
 
   openEvaluateModal(questionnaire: any): void {
     this.selectedQuestionnaire = questionnaire;
+    console.log('Ответы пациента:', questionnaire.patient_responses);
     this.evaluationResult = 0;
     this.evaluationComment = '';
     this.cdr.detectChanges();
   }
+  getPatientResponse(parameterId: number): string {
+  if (!this.selectedQuestionnaire?.patient_responses) return '—';
+  const response = this.selectedQuestionnaire.patient_responses.find(
+    (r: any) => r.parameter === parameterId
+  );
+  return response?.response || '—';
+}
 
   closeModal(): void {
     this.selectedQuestionnaire = null;

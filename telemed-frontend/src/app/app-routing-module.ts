@@ -18,8 +18,14 @@ import { ManageParametersComponent } from './manage-parameters/manage-parameters
 import { ProfileViewComponent } from './profile-view/profile-view';
 import { ProfileUpdateComponent } from './profile-update/profile-update';
 import { PatientMedicalCardComponent } from './patient-medical-card/patient-medical-card';
+import { MedicAppointmentsComponent } from './medic-appointments/medic-appointments';
+import { PatientAppointmentsComponent } from './patient-appointments/patient-appointments';
+import { AppointmentDetailComponent } from './appointment-detail/appointment-detail';
 
 const routes: Routes = [
+  { path: 'medic-appointments', component: MedicAppointmentsComponent },
+  { path: 'patient-appointments', component: PatientAppointmentsComponent },
+  { path: 'appointment-detail/:id', component: AppointmentDetailComponent },
   { path: 'patient-medical-card/:id', component: PatientMedicalCardComponent },
    { path: 'login', component: Login },      // путь к логину
    { path: 'profile-update', component: ProfileUpdateComponent },

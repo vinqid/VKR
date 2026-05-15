@@ -102,7 +102,7 @@
         <div *ngFor="let param of selectedQuestionnaire.parameters" class="mb-2">
           <strong>{{ param.name }}:</strong>
           <span class="ms-2">
-            {{ selectedQuestionnaire.patient_responses?.[param.id]?.response || 'Не указано' }}
+            {{ getPatientResponse(param.id) }}
           </span>
         </div>
       </div>

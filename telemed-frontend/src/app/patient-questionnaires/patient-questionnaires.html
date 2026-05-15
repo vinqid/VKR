@@ -42,16 +42,17 @@
                 </span>
                 <br>
                 <button 
+                  *ngIf="q.status === 'denied'" 
+                  class="btn btn-sm btn-warning"
+                  (click)="retakeQuestionnaire(q.id)">
+                  Заполнить заново
+                </button>
+
+                <button 
                   *ngIf="q.status === 'sent_to_patient'" 
                   class="btn btn-sm btn-primary"
                   [routerLink]="['/fill-questionnaire', q.id]">
                   Заполнить
-                </button>
-                <button 
-                  *ngIf="q.status === 'denied'" 
-                  class="btn btn-sm btn-warning"
-                  [routerLink]="['/fill-questionnaire', q.id]">
-                  Заполнить заново
                 </button>
                 <button 
                   *ngIf="q.status === 'answered'" 

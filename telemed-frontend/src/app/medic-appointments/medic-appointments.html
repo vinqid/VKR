@@ -1,0 +1,104 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Приёмы пациентов</h4>
+      <button class="btn btn-outline-secondary" routerLink="/medic-dashboard">
+        Назад
+      </button>
+    </div>
+    <div class="card-body">
+      <!-- Фильтр по пациенту -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <select class="form-select" [(ngModel)]="selectedPatientId" (change)="filterByPatient()">
+            <option [value]="null">Все пациенты</option>
+            <option *ngFor="let p of patients" [value]="p.id">
+              {{ p.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-success" (click)="toggleCreateForm()">
+            + Новый приём
+          </button>
+        </div>
+      </div>
+
+      <!-- Форма создания приёма -->
+      <div *ngIf="showCreateForm" class="card mb-4 bg-light">
+        <div class="card-body">
+          <h5>Новый приём</h5>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Пациент *</label>
+              <select class="form-select" [(ngModel)]="newAppointment.medical_card_id">
+                <option [value]="null">Выберите пациента</option>
+                <option *ngFor="let p of patients" [value]="p.medical_card?.id || p.id">
+                  {{ p.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-2">
+              <label class="form-label">Дата и время *</label>
+              <input type="datetime-local" class="form-control" [(ngModel)]="newAppointment.date">
+            </div>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Жалобы</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="newAppointment.symptoms"></textarea>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Диагноз</label>
+            <input type="text" class="form-control" [(ngModel)]="newAppointment.diagnosis">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Назначенные анализы</label>
+            <input type="text" class="form-control" [(ngModel)]="newAppointment.tests">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Лечение</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="newAppointment.treatment"></textarea>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Рекомендации</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="newAppointment.recommendations"></textarea>
+          </div>
+          <div class="mt-3">
+            <button class="btn btn-primary me-2" (click)="createAppointment()">Сохранить</button>
+            <button class="btn btn-secondary" (click)="toggleCreateForm()">Отмена</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Список приёмов -->
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary"></div>
+        <p>Загрузка...</p>
+      </div>
+
+      <div *ngIf="!loading && appointments.length === 0" class="alert alert-info">
+        Нет записей о приёмах
+      </div>
+
+      <div class="list-group">
+        <div *ngFor="let app of appointments" class="list-group-item">
+          <div class="row">
+            <div class="col-md-3">
+              <strong>{{ app.patient_name }}</strong><br>
+              <small>{{ formatDate(app.date) }}</small>
+            </div>
+            <div class="col-md-5">
+              <span class="badge bg-primary me-1">Диагноз:</span> {{ app.diagnosis || '—' }}<br>
+              <span class="badge bg-info me-1">Лечение:</span> {{ app.treatment || '—' }}
+            </div>
+            <div class="col-md-4 text-end">
+              <button class="btn btn-sm btn-outline-primary" [routerLink]="['/appointment-detail', app.id]">
+                Подробнее
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

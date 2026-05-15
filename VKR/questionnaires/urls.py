@@ -5,7 +5,7 @@ from .views import (
     PatientQuestionnairesView, QuestionnaireDetailView,
     FillQuestionnaireView, EvaluateQuestionnaireView,
     QuestionnaireStatsView, PatientProfileStatusView,
-    MedicProfileStatusView
+    MedicProfileStatusView, RetakeQuestionnaireView
 )
 
 urlpatterns = [
@@ -20,7 +20,7 @@ urlpatterns = [
     path('questionnaires/<int:pk>/', QuestionnaireDetailView.as_view(), name='questionnaire-detail'),
     path('questionnaires/<int:pk>/fill/', FillQuestionnaireView.as_view(), name='questionnaire-fill'),
     path('questionnaires/<int:pk>/evaluate/', EvaluateQuestionnaireView.as_view(), name='questionnaire-evaluate'),
-
+    path('questionnaires/<int:pk>/retake/', RetakeQuestionnaireView.as_view(), name='questionnaire-retake'),
     # Статистика
     path('stats/', QuestionnaireStatsView.as_view(), name='questionnaire-stats'),
 

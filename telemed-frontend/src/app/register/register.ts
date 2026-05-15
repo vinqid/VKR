@@ -53,9 +53,15 @@ export class Register {
           next: (loginResponse) => {
             // 3. Сохраняем токены
             this.tokenService.setTokens(loginResponse.access, loginResponse.refresh);
-            localStorage.setItem('user', JSON.stringify(loginResponse.user));
+            this.tokenService.setUser(loginResponse.user, loginResponse.access);
             
-            const role = loginResponse.user.role;
+            const role = this.tokenService.getUserRole();
+            if (!role) {
+              this.error = 'Не удалось определить роль пользователя. Проверьте данные аккаунта.';
+              this.tokenService.logout();
+              this.loading = false;
+              return;
+            }
             
             // 4. Проверяем профиль и редиректим
             this.api.checkProfileFilled(role).subscribe({

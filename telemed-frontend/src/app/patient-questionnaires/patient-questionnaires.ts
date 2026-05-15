@@ -52,6 +52,19 @@ export class PatientQuestionnairesComponent implements OnInit {
     return statusMap[status] || status;
   }
 
+  retakeQuestionnaire(id: number): void {
+    this.api.retakeQuestionnaire(id).subscribe({
+      next: () => {
+        alert('Анкета готова к заполнению');
+        this.loadQuestionnaires(); // перезагружаем список
+      },
+      error: (err) => {
+        console.error('Ошибка:', err);
+        alert('Не удалось подготовить анкету');
+      }
+    });
+  }
+
   getStatusClass(status: string): string {
     const classMap: any = {
       'sent_to_patient': 'warning',

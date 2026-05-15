@@ -1,5 +1,8 @@
+from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path, re_path
+from django.views.generic import TemplateView
+from django.views.static import serve
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -23,3 +26,17 @@ urlpatterns = [
     path('api/', include('appointments.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
+
+if settings.FRONTEND_DIST_DIR.exists():
+    urlpatterns += [
+        re_path(
+            r'^(?P<path>.*\.(?:css|js|ico|png|jpg|jpeg|svg|webp|woff2?|ttf|map|json|txt))$',
+            serve,
+            {'document_root': settings.FRONTEND_DIST_DIR},
+        ),
+        re_path(
+            r'^(?!api/|admin/|swagger/|media/|static/).*$',
+            TemplateView.as_view(template_name='index.html'),
+            name='spa',
+        ),
+    ]

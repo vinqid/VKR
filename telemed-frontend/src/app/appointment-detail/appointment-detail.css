@@ -1,0 +1,17 @@
+.card {
+  border: none;
+  transition: transform 0.2s;
+}
+
+.card-header {
+  font-weight: bold;
+  border-bottom: none;
+}
+
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.bg-light {
+  background-color: #f8f9fa !important;
+}

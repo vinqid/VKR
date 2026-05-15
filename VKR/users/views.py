@@ -7,6 +7,21 @@ from patients.models import Patient, MedicalCard
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 
 
+def resolve_user_role(user):
+    valid_roles = {'patient', 'medic'}
+
+    if user.role in valid_roles:
+        return user.role
+
+    if hasattr(user, 'patient_profile'):
+        return 'patient'
+
+    if hasattr(user, 'medic_profile'):
+        return 'medic'
+
+    return None
+
+
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
@@ -63,16 +78,21 @@ class LoginView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
+        role = resolve_user_role(user)
+
+        if role and user.role != role:
+            user.role = role
+            user.save(update_fields=['role'])
 
         refresh = RefreshToken.for_user(user)
 
         # Добавляем роль в токен
-        refresh['role'] = user.role
+        refresh['role'] = role
         access_token = refresh.access_token
-        access_token['role'] = user.role
+        access_token['role'] = role
 
         return Response({
-            "user": UserSerializer(user).data,
+            "user": {**UserSerializer(user).data, "role": role},
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         })

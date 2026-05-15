@@ -39,9 +39,15 @@ export class Login {
       this.tokenService.setTokens(response.access, response.refresh);
       
       // Сохраняем данные пользователя (для проверки роли)
-      localStorage.setItem('user', JSON.stringify(response.user));
+      this.tokenService.setUser(response.user, response.access);
       
-      const role = response.user.role;
+      const role = this.tokenService.getUserRole();
+      if (!role) {
+        this.error = 'Не удалось определить роль пользователя. Проверьте данные аккаунта.';
+        this.tokenService.logout();
+        this.loading = false;
+        return;
+      }
       
       // Проверяем, заполнен ли профиль
       this.api.checkProfileFilled(role).subscribe({
